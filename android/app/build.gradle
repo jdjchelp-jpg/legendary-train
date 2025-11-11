@@ -22,23 +22,20 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // ✅ Enable multidex for core library desugaring
+        // ✅ Enable multidex for app
         multiDexEnabled true
     }
 
-    // ✅ Java 17 support
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
         coreLibraryDesugaringEnabled true
     }
 
-    // ✅ Kotlin 17 target
     kotlinOptions {
         jvmTarget = "17"
     }
 
-    // ✅ Ensures Kotlin uses Java 17 toolchain
     kotlin {
         jvmToolchain(17)
     }
@@ -69,9 +66,9 @@ flutter {
 }
 
 dependencies {
-    // ✅ Java 17 desugaring support
+    // ✅ Java 17 desugaring
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.4"
 
-    // ✅ Multidex support library
+    // ✅ Multidex support
     implementation "androidx.multidex:multidex:2.0.1"
 }
