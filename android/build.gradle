@@ -18,14 +18,24 @@ allprojects {
 
 rootProject.buildDir = "../build"
 
+// ✅ Apply Java 17 and Kotlin 17 settings for all subprojects
 subprojects {
     afterEvaluate { project ->
 
-        // ✅ Apply consistent Java 17 settings for all modules
+        // Android modules
         if (project.plugins.hasPlugin("com.android.application") ||
             project.plugins.hasPlugin("com.android.library")) {
+
             project.android {
                 compileSdkVersion 35
+
+                defaultConfig {
+                    minSdk 21
+                    targetSdk 35
+
+                    // Enable multidex for all modules
+                    multiDexEnabled true
+                }
 
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_17
@@ -35,7 +45,7 @@ subprojects {
             }
         }
 
-        // ✅ Apply Kotlin JVM target for all Kotlin projects
+        // Kotlin modules
         if (project.hasProperty("kotlin")) {
             project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
                 kotlinOptions {
@@ -43,11 +53,10 @@ subprojects {
                 }
             }
 
-            // ✅ This forces Kotlin to use the Java 17 toolchain in all submodules
             project.extensions.findByType(org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension)?.jvmToolchain(17)
         }
 
-        // ✅ Add namespace automatically if missing
+        // Auto-assign namespace if missing
         if (project.hasProperty('android')) {
             project.android {
                 if (namespace == null) {
@@ -56,10 +65,7 @@ subprojects {
             }
         }
     }
-}
 
-// ✅ Set build output folder structure
-subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 
@@ -72,11 +78,9 @@ tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
 
-// ✅ Load keystore properties if present
+// ✅ Load keystore properties
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-
-
